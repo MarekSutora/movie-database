@@ -1,0 +1,65 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  height: 4rem;
+  width: 100%;
+  position: relative;
+  box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  color: black;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.5rem;
+  position: absolute;
+  left: 0.5rem;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-around;
+  width: 20%;
+}
+
+.navLink {
+  text-align: center;
+  color: black;
+  text-decoration: none;
+  font-size: 1.2rem;
+  background: linear-gradient(0deg, rgb(0, 0, 0), rgb(0, 0, 0)) no-repeat right
+    bottom / 0 var(--bg-h);
+  transition: background-size 350ms;
+  --bg-h: 100%;
+  padding-bottom: 2px;
+  --bg-h: 2px;
+
+  &:hover,
+  &:focus-visible {
+    background-size: 100% var(--bg-h);
+    background-position-x: left;
+  }
+}
+
+.activeNavLink {
+  text-align: center;
+  color: black;
+  font-size: large;
+  text-decoration: none;
+  font-size: 1.2rem;
+  background: linear-gradient(0deg, rgb(0, 0, 0), rgb(0, 0, 0)) no-repeat right
+    bottom / 0 var(--bg-h);
+  transition: background-size 350ms;
+  --bg-h: 100%;
+  padding-bottom: 2px;
+  --bg-h: 2px;
+  background-size: 100% var(--bg-h);
+  background-position-x: left;
+}
+
+
+.navlinkContainer {
+  text-align: center;
+  width: 5rem;
+}
