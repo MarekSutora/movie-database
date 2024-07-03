@@ -1,6 +1,6 @@
 import Footer from "./Footer";
 import Header from "./Header";
-import styles from "./Layout.module.scss";
+import styles from "./css/Layout.module.scss";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
