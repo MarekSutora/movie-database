@@ -11,42 +11,45 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider as JotaiProvider } from "jotai";
 import DetailsPage from "./pages/DetailsPage/DetailsPage";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <Layout>
-        <SearchPage />
-      </Layout>
-    ),
-  },
-  {
-    path: "/movie-details",
-    element: (
-      <Layout>
-        <DetailsPage />
-      </Layout>
-    ),
-    children: [
-      {
-        path: "/movie-details/:imdbId",
-        element: (
-          <Layout>
-            <DetailsPage />
-          </Layout>
-        ),
-      },
-    ],
-  },
-  {
-    path: "/favorites",
-    element: (
-      <Layout>
-        <FavoritesPage />
-      </Layout>
-    ),
-  },
-]);
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: (
+        <Layout>
+          <SearchPage />
+        </Layout>
+      ),
+    },
+    {
+      path: "/movie-details",
+      element: (
+        <Layout>
+          <DetailsPage />
+        </Layout>
+      ),
+      children: [
+        {
+          path: "/movie-details/:imdbId",
+          element: (
+            <Layout>
+              <DetailsPage />
+            </Layout>
+          ),
+        },
+      ],
+    },
+    {
+      path: "/favorites",
+      element: (
+        <Layout>
+          <FavoritesPage />
+        </Layout>
+      ),
+    },
+  ],
+  { basename: "/movie-database" }
+);
 
 const queryClient = new QueryClient();
 

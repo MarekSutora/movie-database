@@ -9,6 +9,7 @@ import MovieCard from "../../components/MovieCard/MovieCard";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { NavLink } from "react-router-dom";
+import backgroundImage from "../../assets/pexels-photo-7991579.webp";
 
 const fetchMovies = async (pageParam: string, movieTitle: string) => {
   const response = await fetch(
@@ -70,7 +71,7 @@ const SearchPage = () => {
     <>
       <section className={styles.imageSections}>
         <Image
-          src="/images/pexels-photo-7991579.webp"
+          src={backgroundImage}
           alt="Background"
           className={styles.image}
         />
