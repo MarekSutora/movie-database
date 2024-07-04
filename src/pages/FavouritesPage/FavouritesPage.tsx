@@ -3,10 +3,10 @@ import { Spinner, Text, IconButton, Center } from "@chakra-ui/react";
 import { StarIcon } from "@chakra-ui/icons";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import styles from "./FavouritesPage.module.scss";
-import { MovieBasic } from "../../lib/shared/types";
 import MovieCard from "../../components/MovieCard/MovieCard";
 import { useQuery } from "@tanstack/react-query";
 import { NavLink } from "react-router-dom";
+import { MovieBasic } from "../../lib/types";
 
 const fetchMovieDetails = async (imdbId: string): Promise<MovieBasic> => {
   const res = await fetch(

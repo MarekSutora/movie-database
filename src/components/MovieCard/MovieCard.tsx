@@ -1,6 +1,6 @@
 import { Card, CardBody, Text, Image, Stack, Heading } from "@chakra-ui/react";
-import { MovieBasic } from "../../lib/shared/types";
 import React from "react";
+import { MovieBasic } from "../../lib/types";
 
 type MovieCardProps = {
   movie: MovieBasic;

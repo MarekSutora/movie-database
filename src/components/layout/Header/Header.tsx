@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import styles from "./Header.module.scss";
-import { pagesLinks } from "../../../lib/shared/constants";
+import { pagesLinks } from "../../../lib/constants";
 
 const Header = () => {
   return (

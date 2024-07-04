@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { StarIcon } from "@chakra-ui/icons";
 import styles from "./DetailsPage.module.scss";
-import { MovieDetails } from "../../lib/shared/types";
+import { MovieDetails } from "../../lib/types";
 
 const fetchMovieDetails = async (imdbId: string) => {
   const response = await fetch(

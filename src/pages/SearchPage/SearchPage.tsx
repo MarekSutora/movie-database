@@ -1,15 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Input, Button, Icon, Image, Spinner, Center } from "@chakra-ui/react";
 import { FaSearch } from "react-icons/fa";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import styles from "./SearchPage.module.scss";
 import { useAtom } from "jotai";
-import { moviesAtom } from "../../lib/shared/store";
 import MovieCard from "../../components/MovieCard/MovieCard";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { NavLink } from "react-router-dom";
 import backgroundImage from "../../assets/pexels-photo-7991579.webp";
+import { moviesAtom, movieTitleAtom } from "../../lib/store";
 
 const fetchMovies = async (pageParam: string, movieTitle: string) => {
   const response = await fetch(
@@ -27,13 +27,13 @@ const fetchMovies = async (pageParam: string, movieTitle: string) => {
 };
 
 const SearchPage = () => {
-  const [movieTitle, setMovieTitle] = useState("");
+  const [movieTitle, setMovieTitle] = useAtom(movieTitleAtom);
   const [movies, setMovies] = useAtom(moviesAtom);
   const moviesRef = useRef<HTMLDivElement>(null);
 
   const { data, fetchNextPage, hasNextPage, refetch, isFetching, isFetched } =
     useInfiniteQuery({
-      queryKey: ["movies"],
+      queryKey: ["movies", movieTitle],
       queryFn: async ({ pageParam = "1" }) => {
         const data = await fetchMovies(pageParam, movieTitle);
         setMovies((prevMovies) => [
