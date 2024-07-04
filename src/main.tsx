@@ -2,14 +2,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import SearchPage from "./pages/SearchPage";
+import SearchPage from "./pages/SearchPage/SearchPage";
 import "./index.scss";
 import Layout from "./components/layout/Layout";
-import FavoritesPage from "./pages/FavouritesPage";
+import FavoritesPage from "./pages/FavouritesPage/FavouritesPage";
 import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider as JotaiProvider } from "jotai";
-import DetailsPage from "./pages/DetailsPage";
+import DetailsPage from "./pages/DetailsPage/DetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -21,12 +21,22 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/movie-details/:id",
+    path: "/movie-details",
     element: (
       <Layout>
         <DetailsPage />
       </Layout>
     ),
+    children: [
+      {
+        path: "/movie-details/:imdbId",
+        element: (
+          <Layout>
+            <DetailsPage />
+          </Layout>
+        ),
+      },
+    ],
   },
   {
     path: "/favorites",

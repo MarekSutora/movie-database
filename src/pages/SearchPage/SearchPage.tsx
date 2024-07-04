@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import { Input, Button, Icon, Image, Spinner } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
+import { Input, Button, Icon, Image, Spinner, Center } from "@chakra-ui/react";
 import { FaSearch } from "react-icons/fa";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import styles from "./css/SearchPage.module.scss";
+import styles from "./SearchPage.module.scss";
 import { useAtom } from "jotai";
-import { moviesAtom } from "../lib/shared/store";
-import MovieCard from "../components/moviesList/MovieCard";
+import { moviesAtom } from "../../lib/shared/store";
+import MovieCard from "../../components/MovieCard/MovieCard";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import { NavLink } from "react-router-dom";
 
 const fetchMovies = async (pageParam: string, movieTitle: string) => {
   const response = await fetch(
@@ -15,8 +16,10 @@ const fetchMovies = async (pageParam: string, movieTitle: string) => {
       import.meta.env.VITE_OMDB_API_KEY
     }&s=${movieTitle}&page=${pageParam}`
   );
+
   if (!response.ok) {
-    throw new Error("Network response was not ok");
+    console.error("Network response was not ok");
+    return;
   }
   const data = await response.json();
   return { ...data, prevOffset: pageParam };
@@ -25,10 +28,11 @@ const fetchMovies = async (pageParam: string, movieTitle: string) => {
 const SearchPage = () => {
   const [movieTitle, setMovieTitle] = useState("");
   const [movies, setMovies] = useAtom(moviesAtom);
+  const moviesRef = useRef<HTMLDivElement>(null);
 
-  const { fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
+  const { data, fetchNextPage, hasNextPage, refetch, isFetching, isFetched } =
     useInfiniteQuery({
-      queryKey: ["movies", movieTitle],
+      queryKey: ["movies"],
       queryFn: async ({ pageParam = "1" }) => {
         const data = await fetchMovies(pageParam, movieTitle);
         setMovies((prevMovies) => [
@@ -43,15 +47,24 @@ const SearchPage = () => {
           : undefined;
       },
       initialPageParam: "1",
-      enabled: false, // Disable automatic fetching
+      enabled: false,
     });
 
   const handleSearch = () => {
     if (movieTitle) {
-      setMovies([]); // Clear movies before new search
+      setMovies([]);
       refetch();
     }
   };
+
+  useEffect(() => {
+    if (isFetched && data?.pageParams.length === 1 && moviesRef.current) {
+      moviesRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [data?.pageParams.length, isFetched, movies, moviesRef]);
 
   return (
     <>
@@ -75,23 +88,23 @@ const SearchPage = () => {
             onClick={handleSearch}
             colorScheme="gray"
             leftIcon={<Icon as={FaSearch} marginTop="2px" />}
-            isLoading={isFetchingNextPage}
+            isLoading={isFetching}
           >
             Search
           </Button>
         </div>
       </section>
-      {movies.length > 0 && (
-        <section className={styles.moviesSection}>
+      <section className={styles.moviesSection} ref={moviesRef}>
+        {movies.length > 0 && (
           <InfiniteScroll
             className={styles.infiniteScrollContainer}
             dataLength={movies.length}
             next={fetchNextPage}
             hasMore={hasNextPage}
             loader={
-              <div style={{ textAlign: "center", margin: "20px 0" }}>
-                <Spinner size="xl" />
-              </div>
+              <Center>
+                <Spinner size="xl" color="white" />
+              </Center>
             }
           >
             <ResponsiveMasonry
@@ -99,19 +112,19 @@ const SearchPage = () => {
             >
               <Masonry gutter="1rem" className={styles.masonryContainer}>
                 {movies.map((movie) => (
-                  <MovieCard key={movie.imdbID} movie={movie} />
+                  <NavLink
+                    key={movie.imdbID}
+                    to={`/movie-details/${movie.imdbID}`}
+                    className={styles.movieCard}
+                  >
+                    <MovieCard key={movie.imdbID} movie={movie} />
+                  </NavLink>
                 ))}
               </Masonry>
             </ResponsiveMasonry>
           </InfiniteScroll>
-
-          {/* {isFetchingNextPage && (
-            <div style={{ textAlign: "center", margin: "20px 0" }}>
-              <Spinner size="xl" />
-            </div>
-          )} */}
-        </section>
-      )}
+        )}
+      </section>
     </>
   );
 };

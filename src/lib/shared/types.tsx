@@ -3,7 +3,14 @@ export type Rating = {
   Value: string;
 };
 
-export type Movie = {
+export type MovieBasic = {
+  Title: string;
+  Year: string;
+  Poster: string;
+  imdbID: string;
+};
+
+export type MovieDetails = {
   Title: string;
   Year: string;
   Rated: string;
@@ -18,21 +25,6 @@ export type Movie = {
   Country: string;
   Awards: string;
   Poster: string;
-  Ratings: Rating[];
-  Metascore: string;
-  imdbRating: string;
-  imdbVotes: string;
+  Ratings: { Source: string; Value: string }[];
   imdbID: string;
-  Type: string;
-  DVD: string;
-  BoxOffice: string;
-  Production: string;
-  Website: string;
-  Response: string;
-};
-
-export type MovieResponse = {
-  Search: Movie[];
-  totalResults: string;
-  Response: string;
 };
