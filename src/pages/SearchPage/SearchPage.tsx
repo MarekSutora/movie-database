@@ -13,7 +13,7 @@ import backgroundImage from "../../assets/pexels-photo-7991579.webp";
 
 const fetchMovies = async (pageParam: string, movieTitle: string) => {
   const response = await fetch(
-    `http://www.omdbapi.com/?apikey=${
+    `https://www.omdbapi.com/?apikey=${
       import.meta.env.VITE_OMDB_API_KEY
     }&s=${movieTitle}&page=${pageParam}`
   );
@@ -109,7 +109,7 @@ const SearchPage = () => {
             }
           >
             <ResponsiveMasonry
-              columnsCountBreakPoints={{ 300: 1, 500: 2, 700: 3 }}
+              columnsCountBreakPoints={{ 500: 1, 768: 2, 1024: 3 }}
             >
               <Masonry gutter="1rem" className={styles.masonryContainer}>
                 {movies.map((movie) => (

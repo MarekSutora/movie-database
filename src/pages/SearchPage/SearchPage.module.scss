@@ -38,7 +38,12 @@
 .infiniteScrollContainer {
   margin: 0 auto;
   padding: 1rem;
-  width: 80%;
+  @media screen and (min-width: 768px) {
+    width: 80%;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 70%;
+  }
 }
 
 .movieCard {
