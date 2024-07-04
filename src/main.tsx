@@ -2,14 +2,17 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import SearchPage from "./pages/SearchPage/SearchPage";
 import "./index.scss";
 import Layout from "./components/layout/Layout";
-import FavoritesPage from "./pages/FavouritesPage/FavouritesPage";
 import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider as JotaiProvider } from "jotai";
-import DetailsPage from "./pages/DetailsPage/DetailsPage";
+
+const SearchPage = React.lazy(() => import("./pages/SearchPage/SearchPage"));
+const FavoritesPage = React.lazy(
+  () => import("./pages/FavouritesPage/FavouritesPage")
+);
+const DetailsPage = React.lazy(() => import("./pages/DetailsPage/DetailsPage"));
 
 const router = createBrowserRouter(
   [
@@ -17,7 +20,9 @@ const router = createBrowserRouter(
       path: "/",
       element: (
         <Layout>
-          <SearchPage />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <SearchPage />
+          </React.Suspense>
         </Layout>
       ),
     },
@@ -25,7 +30,9 @@ const router = createBrowserRouter(
       path: "/movie-details",
       element: (
         <Layout>
-          <DetailsPage />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <DetailsPage />
+          </React.Suspense>
         </Layout>
       ),
       children: [
@@ -33,7 +40,9 @@ const router = createBrowserRouter(
           path: "/movie-details/:imdbId",
           element: (
             <Layout>
-              <DetailsPage />
+              <React.Suspense fallback={<div>Loading...</div>}>
+                <DetailsPage />
+              </React.Suspense>
             </Layout>
           ),
         },
@@ -43,7 +52,9 @@ const router = createBrowserRouter(
       path: "/favorites",
       element: (
         <Layout>
-          <FavoritesPage />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <FavoritesPage />
+          </React.Suspense>
         </Layout>
       ),
     },

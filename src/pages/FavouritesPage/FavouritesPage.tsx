@@ -1,12 +1,13 @@
-import { useState } from "react";
-import { Spinner, Text, IconButton, Center } from "@chakra-ui/react";
+import { useState, lazy, Suspense } from "react";
+import { Spinner, Text, IconButton, Center, Tooltip } from "@chakra-ui/react";
 import { StarIcon } from "@chakra-ui/icons";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import styles from "./FavouritesPage.module.scss";
-import MovieCard from "../../components/MovieCard/MovieCard";
 import { useQuery } from "@tanstack/react-query";
 import { NavLink } from "react-router-dom";
 import { MovieBasic } from "../../lib/types";
+
+const MovieCard = lazy(() => import("../../components/MovieCard/MovieCard"));
 
 const fetchMovieDetails = async (imdbId: string): Promise<MovieBasic> => {
   const res = await fetch(
@@ -85,17 +86,31 @@ const FavouritesPage = () => {
                 to={`/movie-details/${movie.imdbID}`}
                 className={styles.movieCard}
               >
-                <MovieCard key={movie.imdbID} movie={movie}>
-                  <IconButton
-                    icon={<StarIcon />}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleRemoveFavourite(movie.imdbID);
-                    }}
-                    colorScheme="yellow"
-                    aria-label="Remove favourite"
-                  />
-                </MovieCard>
+                <Suspense
+                  fallback={
+                    <Center>
+                      <Spinner size="md" color="white" />{" "}
+                    </Center>
+                  }
+                >
+                  <MovieCard key={movie.imdbID} movie={movie}>
+                    <Tooltip
+                      label="Remove from favourites"
+                      aria-label="Remove from favourites"
+                      fontSize={"md"}
+                    >
+                      <IconButton
+                        icon={<StarIcon />}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleRemoveFavourite(movie.imdbID);
+                        }}
+                        colorScheme="yellow"
+                        aria-label="Remove favourite"
+                      />
+                    </Tooltip>
+                  </MovieCard>
+                </Suspense>
               </NavLink>
             ))}
           </Masonry>

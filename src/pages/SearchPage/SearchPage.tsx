@@ -1,15 +1,25 @@
-import { useEffect, useRef } from "react";
-import { Input, Button, Icon, Image, Spinner, Center } from "@chakra-ui/react";
+import { useEffect, useRef, lazy, Suspense } from "react";
+import {
+  Input,
+  Button,
+  Icon,
+  Image,
+  Spinner,
+  Center,
+  useToast,
+} from "@chakra-ui/react";
 import { FaSearch } from "react-icons/fa";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import styles from "./SearchPage.module.scss";
 import { useAtom } from "jotai";
-import MovieCard from "../../components/MovieCard/MovieCard";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { NavLink } from "react-router-dom";
 import backgroundImage from "../../assets/pexels-photo-7991579.webp";
 import { moviesAtom, movieTitleAtom } from "../../lib/store";
+import { getErrorMessage } from "../../lib/utils";
+
+const MovieCard = lazy(() => import("../../components/MovieCard/MovieCard"));
 
 const fetchMovies = async (pageParam: string, movieTitle: string) => {
   const response = await fetch(
@@ -20,7 +30,7 @@ const fetchMovies = async (pageParam: string, movieTitle: string) => {
 
   if (!response.ok) {
     console.error("Network response was not ok");
-    return;
+    throw new Error("Failed to fetch movies");
   }
   const data = await response.json();
   return { ...data, prevOffset: pageParam };
@@ -30,17 +40,40 @@ const SearchPage = () => {
   const [movieTitle, setMovieTitle] = useAtom(movieTitleAtom);
   const [movies, setMovies] = useAtom(moviesAtom);
   const moviesRef = useRef<HTMLDivElement>(null);
+  const toast = useToast();
 
   const { data, fetchNextPage, hasNextPage, refetch, isFetching, isFetched } =
     useInfiniteQuery({
       queryKey: ["movies", movieTitle],
       queryFn: async ({ pageParam = "1" }) => {
-        const data = await fetchMovies(pageParam, movieTitle);
-        setMovies((prevMovies) => [
-          ...(pageParam === "1" ? [] : prevMovies),
-          ...(data.Search || []),
-        ]);
-        return data;
+        try {
+          const data = await fetchMovies(pageParam, movieTitle);
+
+          if (pageParam === "1" && data.Response === "False") {
+            toast({
+              title: "No movies found.",
+              description: "Try searching for something else.",
+              status: "warning",
+              duration: 3000,
+              isClosable: true,
+            });
+          }
+
+          setMovies((prevMovies) => [
+            ...(pageParam === "1" ? [] : prevMovies),
+            ...(data.Search || []),
+          ]);
+          return data;
+        } catch (error) {
+          toast({
+            title: "Error fetching movies.",
+            description: getErrorMessage(error),
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+          throw error;
+        }
       },
       getNextPageParam: (lastPage) => {
         return lastPage.prevOffset
@@ -51,10 +84,24 @@ const SearchPage = () => {
       enabled: false,
     });
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   const handleSearch = () => {
-    if (movieTitle) {
+    if (movieTitle.length >= 3) {
       setMovies([]);
       refetch();
+    } else {
+      toast({
+        title: "Input too short.",
+        description: "Please enter at least 3 characters.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -81,6 +128,7 @@ const SearchPage = () => {
             value={movieTitle}
             colorScheme="gray"
             onChange={(e) => setMovieTitle(e.target.value)}
+            onKeyDownCapture={handleKeyPress}
             backgroundColor="white"
             width="15rem"
             focusBorderColor="gray.500"
@@ -103,9 +151,11 @@ const SearchPage = () => {
             next={fetchNextPage}
             hasMore={hasNextPage}
             loader={
-              <Center>
-                <Spinner size="xl" color="white" />
-              </Center>
+              isFetching && (
+                <Center>
+                  <Spinner size="xl" color="white" />
+                </Center>
+              )
             }
           >
             <ResponsiveMasonry
@@ -118,7 +168,15 @@ const SearchPage = () => {
                     to={`/movie-details/${movie.imdbID}`}
                     className={styles.movieCard}
                   >
-                    <MovieCard key={movie.imdbID} movie={movie} />
+                    <Suspense
+                      fallback={
+                        <Center>
+                          <Spinner size="md" color="white" />
+                        </Center>
+                      }
+                    >
+                      <MovieCard key={movie.imdbID} movie={movie} />
+                    </Suspense>
                   </NavLink>
                 ))}
               </Masonry>

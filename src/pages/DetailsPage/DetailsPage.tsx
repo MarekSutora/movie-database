@@ -15,6 +15,7 @@ import {
 import { StarIcon } from "@chakra-ui/icons";
 import styles from "./DetailsPage.module.scss";
 import { MovieDetails } from "../../lib/types";
+import { Tooltip } from "@chakra-ui/react";
 
 const fetchMovieDetails = async (imdbId: string) => {
   const response = await fetch(
@@ -99,13 +100,19 @@ const DetailsPage = () => {
               justifyContent="space-between"
             >
               {movie.Title}{" "}
-              <IconButton
-                icon={<StarIcon />}
-                onClick={() => handleToggleFavourite(movie.imdbID)}
-                colorScheme={isFavourite ? "yellow" : "gray"}
-                aria-label="Toggle favourite"
-                variant={isFavourite ? "solid" : "outline"}
-              />
+              <Tooltip
+                label="Add to favourites"
+                aria-label="Add to favourites"
+                fontSize={"md"}
+              >
+                <IconButton
+                  icon={<StarIcon />}
+                  onClick={() => handleToggleFavourite(movie.imdbID)}
+                  colorScheme={isFavourite ? "yellow" : "gray"}
+                  aria-label="Toggle favourite"
+                  variant={isFavourite ? "solid" : "outline"}
+                />
+              </Tooltip>
             </Heading>
             <Text>
               <strong>Year:</strong> {movie.Year}
