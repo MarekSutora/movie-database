@@ -9,6 +9,7 @@ import FavoritesPage from "./pages/FavouritesPage";
 import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider as JotaiProvider } from "jotai";
+import DetailsPage from "./pages/DetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <SearchPage />
+      </Layout>
+    ),
+  },
+  {
+    path: "/movie-details/:id",
+    element: (
+      <Layout>
+        <DetailsPage />
       </Layout>
     ),
   },
@@ -33,7 +42,7 @@ const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ChakraProvider>
+    <ChakraProvider resetCSS={true}>
       <JotaiProvider>
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
