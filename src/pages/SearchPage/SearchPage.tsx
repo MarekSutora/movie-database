@@ -111,7 +111,7 @@ const SearchPage = () => {
             <ResponsiveMasonry
               columnsCountBreakPoints={{ 500: 1, 768: 2, 1024: 3 }}
             >
-              <Masonry gutter="1rem" className={styles.masonryContainer}>
+              <Masonry gutter="1rem">
                 {movies.map((movie) => (
                   <NavLink
                     key={movie.imdbID}
