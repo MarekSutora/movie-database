@@ -1,25 +1,16 @@
-import { useEffect, useRef, lazy, Suspense } from "react";
-import {
-  Input,
-  Button,
-  Icon,
-  Image,
-  Spinner,
-  Center,
-  useToast,
-} from "@chakra-ui/react";
-import { FaSearch } from "react-icons/fa";
+import React, { lazy, Suspense } from "react";
+import { Center, Spinner, useToast } from "@chakra-ui/react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import styles from "./SearchPage.module.scss";
 import { useAtom } from "jotai";
-import InfiniteScroll from "react-infinite-scroll-component";
-import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import { NavLink } from "react-router-dom";
-import backgroundImage from "../../assets/pexels-photo-7991579.webp";
 import { moviesAtom, movieTitleAtom } from "../../lib/store";
 import { getErrorMessage } from "../../lib/utils";
 
-const MovieCard = lazy(() => import("../../components/MovieCard/MovieCard"));
+const ImageSearchSection = lazy(
+  () => import("../../components/ImageSearchSection/ImageSearchSection")
+);
+const MoviesSection = lazy(
+  () => import("../../components/MoviesSection/MoviesSection")
+);
 
 const fetchMovies = async (pageParam: string, movieTitle: string) => {
   const response = await fetch(
@@ -39,50 +30,48 @@ const fetchMovies = async (pageParam: string, movieTitle: string) => {
 const SearchPage = () => {
   const [movieTitle, setMovieTitle] = useAtom(movieTitleAtom);
   const [movies, setMovies] = useAtom(moviesAtom);
-  const moviesRef = useRef<HTMLDivElement>(null);
   const toast = useToast();
 
-  const { data, fetchNextPage, hasNextPage, refetch, isFetching, isFetched } =
-    useInfiniteQuery({
-      queryKey: ["movies", movieTitle],
-      queryFn: async ({ pageParam = "1" }) => {
-        try {
-          const data = await fetchMovies(pageParam, movieTitle);
+  const { fetchNextPage, hasNextPage, refetch, isFetching } = useInfiniteQuery({
+    queryKey: ["movies", movieTitle],
+    queryFn: async ({ pageParam = "1" }) => {
+      try {
+        const data = await fetchMovies(pageParam, movieTitle);
 
-          if (pageParam === "1" && data.Response === "False") {
-            toast({
-              title: "No movies found.",
-              description: "Try searching for something else.",
-              status: "warning",
-              duration: 3000,
-              isClosable: true,
-            });
-          }
-
-          setMovies((prevMovies) => [
-            ...(pageParam === "1" ? [] : prevMovies),
-            ...(data.Search || []),
-          ]);
-          return data;
-        } catch (error) {
+        if (pageParam === "1" && data.Response === "False") {
           toast({
-            title: "Error fetching movies.",
-            description: getErrorMessage(error),
-            status: "error",
-            duration: 5000,
+            title: "No movies found.",
+            description: "Try searching for something else.",
+            status: "warning",
+            duration: 3000,
             isClosable: true,
           });
-          throw error;
         }
-      },
-      getNextPageParam: (lastPage) => {
-        return lastPage.prevOffset
-          ? (parseInt(lastPage.prevOffset) + 1).toString()
-          : undefined;
-      },
-      initialPageParam: "1",
-      enabled: false,
-    });
+
+        setMovies((prevMovies) => [
+          ...(pageParam === "1" ? [] : prevMovies),
+          ...(data.Search || []),
+        ]);
+        return data;
+      } catch (error) {
+        toast({
+          title: "Error fetching movies.",
+          description: getErrorMessage(error),
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+        throw error;
+      }
+    },
+    getNextPageParam: (lastPage) => {
+      return lastPage.prevOffset
+        ? (parseInt(lastPage.prevOffset) + 1).toString()
+        : undefined;
+    },
+    initialPageParam: "1",
+    enabled: false,
+  });
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -105,85 +94,39 @@ const SearchPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (isFetched && data?.pageParams.length === 1 && moviesRef.current) {
-      moviesRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, [data?.pageParams.length, isFetched, movies, moviesRef]);
-
   return (
     <>
-      <section className={styles.imageSections}>
-        <Image
-          src={backgroundImage}
-          alt="Background"
-          className={styles.image}
+      <Suspense
+        fallback={
+          <Center>
+            <Spinner size="xl" color="white" />
+          </Center>
+        }
+      >
+        <ImageSearchSection
+          movieTitle={movieTitle}
+          setMovieTitle={setMovieTitle}
+          handleSearch={handleSearch}
+          handleKeyPress={handleKeyPress}
+          isFetching={isFetching}
         />
-        <div className={styles.inputContainer}>
-          <Input
-            placeholder="Movie name..."
-            value={movieTitle}
-            colorScheme="gray"
-            onChange={(e) => setMovieTitle(e.target.value)}
-            onKeyDownCapture={handleKeyPress}
-            backgroundColor="white"
-            width="15rem"
-            focusBorderColor="gray.500"
-          />
-          <Button
-            onClick={handleSearch}
-            colorScheme="gray"
-            leftIcon={<Icon as={FaSearch} marginTop="2px" />}
-            isLoading={isFetching}
-          >
-            Search
-          </Button>
-        </div>
-      </section>
-      <section className={styles.moviesSection} ref={moviesRef}>
-        {movies.length > 0 && (
-          <InfiniteScroll
-            className={styles.infiniteScrollContainer}
-            dataLength={movies.length}
-            next={fetchNextPage}
+      </Suspense>
+      {movies.length > 0 && (
+        <Suspense
+          fallback={
+            <Center>
+              <Spinner size="xl" color="white" />
+            </Center>
+          }
+        >
+          <MoviesSection
+            movies={movies}
+            fetchNextPage={fetchNextPage}
             hasMore={hasNextPage}
-            loader={
-              isFetching && (
-                <Center>
-                  <Spinner size="xl" color="white" />
-                </Center>
-              )
-            }
-          >
-            <ResponsiveMasonry
-              columnsCountBreakPoints={{ 500: 1, 768: 2, 1024: 3 }}
-            >
-              <Masonry gutter="1rem">
-                {movies.map((movie) => (
-                  <NavLink
-                    key={movie.imdbID}
-                    to={`/movie-details/${movie.imdbID}`}
-                    className={styles.movieCard}
-                  >
-                    <Suspense
-                      fallback={
-                        <Center>
-                          <Spinner size="md" color="white" />
-                        </Center>
-                      }
-                    >
-                      <MovieCard key={movie.imdbID} movie={movie} />
-                    </Suspense>
-                  </NavLink>
-                ))}
-              </Masonry>
-            </ResponsiveMasonry>
-          </InfiniteScroll>
-        )}
-      </section>
+            isFetching={isFetching}
+          />
+        </Suspense>
+      )}
     </>
   );
 };
