@@ -87,7 +87,7 @@ const DetailsPage = () => {
         borderRadius="lg"
         overflow="hidden"
         height="auto"
-        width={{ base: "100%", md: "80%" }}
+        width={{ base: "90%", lg: "65%" }}
         flexDirection={{ base: "column", md: "row" }}
       >
         <CardBody width={{ base: "100%", md: "50%" }}>
@@ -164,7 +164,6 @@ const DetailsPage = () => {
             alt={movie.Title}
             objectFit="cover"
             width={{ base: "100%", md: "50%" }}
-            height={{ base: "100%", md: "100%" }}
           />
         )}
       </Card>
