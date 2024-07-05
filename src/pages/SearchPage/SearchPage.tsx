@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect, useRef } from "react";
 import { Center, Spinner, useToast } from "@chakra-ui/react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
@@ -31,47 +31,62 @@ const SearchPage = () => {
   const [movieTitle, setMovieTitle] = useAtom(movieTitleAtom);
   const [movies, setMovies] = useAtom(moviesAtom);
   const toast = useToast();
+  const moviesRef = useRef<HTMLDivElement>(null);
 
-  const { fetchNextPage, hasNextPage, refetch, isFetching } = useInfiniteQuery({
-    queryKey: ["movies", movieTitle],
-    queryFn: async ({ pageParam = "1" }) => {
-      try {
-        const data = await fetchMovies(pageParam, movieTitle);
+  const { data, fetchNextPage, hasNextPage, refetch, isFetching, isFetched } =
+    useInfiniteQuery({
+      queryKey: ["movies", movieTitle],
+      queryFn: async ({ pageParam = "1" }) => {
+        try {
+          const data = await fetchMovies(pageParam, movieTitle);
 
-        if (pageParam === "1" && data.Response === "False") {
+          if (pageParam === "1" && data.Response === "False") {
+            toast({
+              title: "No movies found.",
+              description: "Try searching for something else.",
+              status: "warning",
+              duration: 3000,
+              isClosable: true,
+            });
+          }
+
+          setMovies((prevMovies) => [
+            ...(pageParam === "1" ? [] : prevMovies),
+            ...(data.Search || []),
+          ]);
+          return data;
+        } catch (error) {
           toast({
-            title: "No movies found.",
-            description: "Try searching for something else.",
-            status: "warning",
-            duration: 3000,
+            title: "Error fetching movies.",
+            description: getErrorMessage(error),
+            status: "error",
+            duration: 5000,
             isClosable: true,
           });
+          throw error;
         }
+      },
+      getNextPageParam: (lastPage) => {
+        return lastPage.prevOffset
+          ? (parseInt(lastPage.prevOffset) + 1).toString()
+          : undefined;
+      },
+      initialPageParam: "1",
+      enabled: false,
+    });
 
-        setMovies((prevMovies) => [
-          ...(pageParam === "1" ? [] : prevMovies),
-          ...(data.Search || []),
-        ]);
-        return data;
-      } catch (error) {
-        toast({
-          title: "Error fetching movies.",
-          description: getErrorMessage(error),
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-        throw error;
-      }
-    },
-    getNextPageParam: (lastPage) => {
-      return lastPage.prevOffset
-        ? (parseInt(lastPage.prevOffset) + 1).toString()
-        : undefined;
-    },
-    initialPageParam: "1",
-    enabled: false,
-  });
+  useEffect(() => {
+    if (isFetched && data?.pageParams.length === 1) {
+      setTimeout(() => {
+        if (moviesRef.current) {
+          moviesRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }, 150);
+    }
+  }, [data?.pageParams.length, isFetched, movies, moviesRef]);
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -119,6 +134,11 @@ const SearchPage = () => {
             </Center>
           }
         >
+          <div
+            ref={moviesRef}
+            style={{ display: "inline", width: "0px", height: "0px" }}
+          />
+          {/* This div is used to scroll to the movies section after search, simple workaround, nothing more */}
           <MoviesSection
             movies={movies}
             fetchNextPage={fetchNextPage}

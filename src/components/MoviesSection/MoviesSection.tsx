@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef } from "react";
+import { lazy, Suspense } from "react";
 import { Spinner, Center } from "@chakra-ui/react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
@@ -21,16 +21,8 @@ const MoviesSection = ({
   hasMore,
   isFetching,
 }: MoviesSectionProps) => {
-  const moviesRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setTimeout(() => {
-      moviesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 150);
-  }, []);
-
   return (
-    <section className={styles.moviesSection} ref={moviesRef}>
+    <section className={styles.moviesSection}>
       <InfiniteScroll
         className={styles.infiniteScrollContainer}
         dataLength={movies.length}
