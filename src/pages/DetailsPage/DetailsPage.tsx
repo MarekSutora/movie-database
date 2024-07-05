@@ -87,7 +87,7 @@ const DetailsPage = () => {
         borderRadius="lg"
         overflow="hidden"
         height="auto"
-        width={{ base: "90%", lg: "65%" }}
+        width={{ base: "90%", md: "70%", lg: "58%" }}
         flexDirection={{ base: "column", md: "row" }}
       >
         <CardBody width={{ base: "100%", md: "50%" }}>

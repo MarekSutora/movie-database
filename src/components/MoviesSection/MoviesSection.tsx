@@ -2,7 +2,6 @@ import { lazy, Suspense, useEffect, useRef } from "react";
 import { Spinner, Center } from "@chakra-ui/react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import { Link } from "react-router-dom";
 import styles from "./MoviesSection.module.scss";
 import { MovieBasic } from "../../lib/types";
 
@@ -49,14 +48,10 @@ const MoviesSection = ({
         >
           <Masonry gutter="1rem">
             {movies.map((movie) => (
-              <Link
+              <a
                 key={movie.imdbID}
-                to={`/movie-details/${movie.imdbID}`}
+                href={`/movie-database/movie-details/${movie.imdbID}`}
                 className={styles.movieCard}
-                onClick={(e) => {
-                  e.preventDefault();
-                  console.log(e);
-                }}
               >
                 <Suspense
                   fallback={
@@ -67,7 +62,7 @@ const MoviesSection = ({
                 >
                   <MovieCard key={movie.imdbID} movie={movie} />
                 </Suspense>
-              </Link>
+              </a>
             ))}
           </Masonry>
         </ResponsiveMasonry>
