@@ -1,7 +1,6 @@
-// src/main.tsx
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./index.scss";
 import Layout from "./components/layout/Layout";
 import { ChakraProvider } from "@chakra-ui/react";
@@ -14,54 +13,6 @@ const FavoritesPage = React.lazy(
 );
 const DetailsPage = React.lazy(() => import("./pages/DetailsPage/DetailsPage"));
 
-const router = createBrowserRouter(
-  [
-    {
-      path: "/",
-      element: (
-        <Layout>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <SearchPage />
-          </React.Suspense>
-        </Layout>
-      ),
-    },
-    {
-      path: "/movie-details",
-      element: (
-        <Layout>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <DetailsPage />
-          </React.Suspense>
-        </Layout>
-      ),
-      children: [
-        {
-          path: "/movie-details/:imdbId",
-          element: (
-            <Layout>
-              <React.Suspense fallback={<div>Loading...</div>}>
-                <DetailsPage />
-              </React.Suspense>
-            </Layout>
-          ),
-        },
-      ],
-    },
-    {
-      path: "/favorites",
-      element: (
-        <Layout>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <FavoritesPage />
-          </React.Suspense>
-        </Layout>
-      ),
-    },
-  ],
-  { basename: "/movie-database" }
-);
-
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -69,7 +20,45 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ChakraProvider resetCSS={true}>
       <JotaiProvider>
         <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
+          <BrowserRouter basename="/movie-database">
+            <Layout>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <React.Suspense fallback={<div>Loading...</div>}>
+                      <SearchPage />
+                    </React.Suspense>
+                  }
+                />
+                <Route
+                  path="/movie-details"
+                  element={
+                    <React.Suspense fallback={<div>Loading...</div>}>
+                      <DetailsPage />
+                    </React.Suspense>
+                  }
+                >
+                  <Route
+                    path=":imdbId"
+                    element={
+                      <React.Suspense fallback={<div>Loading...</div>}>
+                        <DetailsPage />
+                      </React.Suspense>
+                    }
+                  />
+                </Route>
+                <Route
+                  path="/favorites"
+                  element={
+                    <React.Suspense fallback={<div>Loading...</div>}>
+                      <FavoritesPage />
+                    </React.Suspense>
+                  }
+                />
+              </Routes>
+            </Layout>
+          </BrowserRouter>
         </QueryClientProvider>
       </JotaiProvider>
     </ChakraProvider>
