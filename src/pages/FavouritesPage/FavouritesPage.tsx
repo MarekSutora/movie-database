@@ -4,7 +4,7 @@ import { StarIcon } from "@chakra-ui/icons";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import styles from "./FavouritesPage.module.scss";
 import { useQuery } from "@tanstack/react-query";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { MovieBasic } from "../../lib/types";
 
 const MovieCard = lazy(() => import("../../components/MovieCard/MovieCard"));
@@ -81,7 +81,7 @@ const FavouritesPage = () => {
         >
           <Masonry gutter="1rem" className={styles.masonryContainer}>
             {movies.map((movie) => (
-              <NavLink
+              <Link
                 key={movie.imdbID}
                 to={`/movie-details/${movie.imdbID}`}
                 className={styles.movieCard}
@@ -111,7 +111,7 @@ const FavouritesPage = () => {
                     </Tooltip>
                   </MovieCard>
                 </Suspense>
-              </NavLink>
+              </Link>
             ))}
           </Masonry>
         </ResponsiveMasonry>

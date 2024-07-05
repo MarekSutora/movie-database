@@ -34,11 +34,11 @@
   gap: 1rem;
 }
 
-.navLink {
+.Link {
   @include nav-link-style;
 }
 
-.activeNavLink {
+.activeLink {
   @include nav-link-style;
   background-size: 100% var(--bg-h);
   background-position-x: left;
