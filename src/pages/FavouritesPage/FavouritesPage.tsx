@@ -51,7 +51,7 @@ const FavouritesPage = () => {
 
   if (isLoading) {
     return (
-      <Center className={styles.favoritesPage}>
+      <Center className={styles.favouritesPage}>
         <Spinner size="xl" color="white" />
       </Center>
     );
@@ -59,7 +59,7 @@ const FavouritesPage = () => {
 
   if (error) {
     return (
-      <Center className={styles.favoritesPage}>
+      <Center className={styles.favouritesPage}>
         Failed to load favourite movies.
       </Center>
     );
@@ -67,14 +67,14 @@ const FavouritesPage = () => {
 
   if (!movies || movies.length === 0) {
     return (
-      <Center className={styles.favoritesPage}>
+      <Center className={styles.favouritesPage}>
         <Text color="white">No favourite movies found.</Text>
       </Center>
     );
   }
 
   return (
-    <div className={styles.favoritesPage}>
+    <div className={styles.favouritesPage}>
       <section className={styles.moviesSection}>
         <ResponsiveMasonry
           columnsCountBreakPoints={{ 600: 1, 800: 2, 1000: 3 }}

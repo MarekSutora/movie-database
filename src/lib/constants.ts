@@ -1,4 +1,4 @@
 export const pagesLinks = [
   { name: "Search", path: "/" },
-  { name: "Favorites", path: "/favorites" },
+  { name: "Favourites", path: "/favourites" },
 ] as const;
