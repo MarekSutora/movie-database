@@ -26,6 +26,7 @@ const fetchMovieDetails = async (imdbId: string) => {
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
+
   return response.json();
 };
 
@@ -36,11 +37,7 @@ const DetailsPage = () => {
     return savedFavourites ? JSON.parse(savedFavourites) : [];
   });
 
-  const {
-    data: movie,
-    isLoading,
-    error,
-  } = useQuery<MovieDetails>({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["movieDetails", imdbId],
     queryFn: () => fetchMovieDetails(imdbId!),
   });
@@ -70,7 +67,7 @@ const DetailsPage = () => {
     );
   }
 
-  if (!movie) {
+  if (data.Response === "False") {
     return (
       <div className={styles.detailsPage}>
         <Center>
@@ -79,6 +76,7 @@ const DetailsPage = () => {
       </div>
     );
   }
+  const movie = data as MovieDetails;
 
   const isFavourite = favourites.includes(movie.imdbID);
 
