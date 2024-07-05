@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef } from "react";
 import { Spinner, Center } from "@chakra-ui/react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import { useNavigate } from "react-router-dom";
 import styles from "./MoviesSection.module.scss";
 import { MovieBasic } from "../../lib/types";
 
@@ -21,6 +22,7 @@ const MoviesSection = ({
   isFetching,
 }: MoviesSectionProps) => {
   const moviesRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTimeout(() => {
@@ -48,10 +50,21 @@ const MoviesSection = ({
         >
           <Masonry gutter="1rem">
             {movies.map((movie) => (
-              <a
+              <div
                 key={movie.imdbID}
-                href={`/movie-database/movie-details/${movie.imdbID}`}
                 className={styles.movieCard}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  if (e.button === 0) {
+                    navigate(`/movie-details/${movie.imdbID}`);
+                  } else if (e.button === 1) {
+                    window.open(
+                      `movie-database/movie-details/${movie.imdbID}`,
+                      "_blank",
+                      "noreferrer"
+                    );
+                  }
+                }}
               >
                 <Suspense
                   fallback={
@@ -62,7 +75,7 @@ const MoviesSection = ({
                 >
                   <MovieCard key={movie.imdbID} movie={movie} />
                 </Suspense>
-              </a>
+              </div>
             ))}
           </Masonry>
         </ResponsiveMasonry>
