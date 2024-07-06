@@ -27,7 +27,7 @@ const router = createBrowserRouter(
       ),
     },
     {
-      path: "/movie-details",
+      path: "/movie-details/:imdbId",
       element: (
         <Layout>
           <React.Suspense fallback={<div>Loading...</div>}>
@@ -35,18 +35,6 @@ const router = createBrowserRouter(
           </React.Suspense>
         </Layout>
       ),
-      children: [
-        {
-          path: "/movie-details/:imdbId",
-          element: (
-            <Layout>
-              <React.Suspense fallback={<div>Loading...</div>}>
-                <DetailsPage />
-              </React.Suspense>
-            </Layout>
-          ),
-        },
-      ],
     },
     {
       path: "/favourites",
