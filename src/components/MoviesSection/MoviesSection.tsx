@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { Spinner, Center } from "@chakra-ui/react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
@@ -13,6 +13,7 @@ type MoviesSectionProps = {
   fetchNextPage: () => void;
   hasMore: boolean;
   isFetching: boolean;
+  pageParamsLength?: number;
 };
 
 const MoviesSection = ({
@@ -20,9 +21,21 @@ const MoviesSection = ({
   fetchNextPage,
   hasMore,
   isFetching,
+  pageParamsLength,
 }: MoviesSectionProps) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current && pageParamsLength === 1) {
+      window.scrollTo({
+        top: scrollRef.current.offsetTop,
+        behavior: "smooth",
+      });
+    }
+  }, [pageParamsLength]);
+
   return (
-    <section className={styles.moviesSection}>
+    <section className={styles.moviesSection} ref={scrollRef}>
       <InfiniteScroll
         className={styles.infiniteScrollContainer}
         dataLength={movies.length}

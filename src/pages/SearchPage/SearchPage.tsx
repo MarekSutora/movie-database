@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useRef } from "react";
+import React, { lazy, Suspense } from "react";
 import { Center, Spinner, useToast } from "@chakra-ui/react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
@@ -31,9 +31,7 @@ const SearchPage = () => {
   const [movieTitle, setMovieTitle] = useAtom(movieTitleAtom);
   const [movies, setMovies] = useAtom(moviesAtom);
   const toast = useToast();
-  const moviesRef = useRef<HTMLDivElement>(null);
-
-  const { data, fetchNextPage, hasNextPage, refetch, isFetching, isFetched } =
+  const { data, fetchNextPage, hasNextPage, refetch, isFetching } =
     useInfiniteQuery({
       queryKey: ["movies", movieTitle],
       queryFn: async ({ pageParam = "1" }) => {
@@ -74,19 +72,6 @@ const SearchPage = () => {
       initialPageParam: "1",
       enabled: false,
     });
-
-  useEffect(() => {
-    if (isFetched && data?.pageParams.length === 1) {
-      setTimeout(() => {
-        if (moviesRef.current) {
-          moviesRef.current.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }
-      }, 150);
-    }
-  }, [data?.pageParams.length, isFetched, movies, moviesRef]);
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -134,16 +119,12 @@ const SearchPage = () => {
             </Center>
           }
         >
-          <div
-            ref={moviesRef}
-            style={{ display: "inline", width: "0px", height: "0px" }}
-          />
-          {/* This div is used to scroll to the movies section after search, simple workaround, nothing more */}
           <MoviesSection
             movies={movies}
             fetchNextPage={fetchNextPage}
             hasMore={hasNextPage}
             isFetching={isFetching}
+            pageParamsLength={data?.pageParams.length}
           />
         </Suspense>
       )}
