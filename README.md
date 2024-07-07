@@ -36,6 +36,7 @@ This project is a React application that allows users to search for movies, view
 ### Styling
 
 - **CSS Modules with SASS**: Used for scoped styling of components to ensure modular and maintainable styles.
+- **Chakra UI**: Used as the component library for building the UI components.
 
 ## Project Structure
 
@@ -47,6 +48,7 @@ This project is a React application that allows users to search for movies, view
     - **types**: Contains TypeScript type definitions.
     - **store**: Contains Jotai atoms for state management.
     - **utils**: Contains utility functions.
+  - **pages**: Contains the main page components for routing (e.g., MovieSearch, MovieDetail, MyFavoriteMovies). 
 
 ## Deployment
 
