@@ -10,7 +10,7 @@ export default defineConfig({
       },
     },
   },
-  base: "/movie-database/",
+  base: "/",
   // build: {
   //   outDir: "dist",
   // },
