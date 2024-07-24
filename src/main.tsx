@@ -13,38 +13,41 @@ const FavouritesPage = React.lazy(
 );
 const DetailsPage = React.lazy(() => import("./pages/DetailsPage/DetailsPage"));
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <Layout>
-        <React.Suspense fallback={<div>Loading...</div>}>
-          <SearchPage />
-        </React.Suspense>
-      </Layout>
-    ),
-  },
-  {
-    path: "/movie-details",
-    element: (
-      <Layout>
-        <React.Suspense fallback={<div>Loading...</div>}>
-          <DetailsPage />
-        </React.Suspense>
-      </Layout>
-    ),
-  },
-  {
-    path: "/favourites",
-    element: (
-      <Layout>
-        <React.Suspense fallback={<div>Loading...</div>}>
-          <FavouritesPage />
-        </React.Suspense>
-      </Layout>
-    ),
-  },
-]);
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: (
+        <Layout>
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <SearchPage />
+          </React.Suspense>
+        </Layout>
+      ),
+    },
+    {
+      path: "/movie-details",
+      element: (
+        <Layout>
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <DetailsPage />
+          </React.Suspense>
+        </Layout>
+      ),
+    },
+    {
+      path: "/favourites",
+      element: (
+        <Layout>
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <FavouritesPage />
+          </React.Suspense>
+        </Layout>
+      ),
+    },
+  ],
+  { basename: "/movie-database" }
+);
 
 const queryClient = new QueryClient();
 
