@@ -1,8 +1,3 @@
-export type Rating = {
-  Source: string;
-  Value: string;
-};
-
 export type MovieBasic = {
   Title: string;
   Year: string;
