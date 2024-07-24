@@ -56,7 +56,7 @@ const MoviesSection = ({
             {movies.map((movie) => (
               <Link
                 key={movie.imdbID}
-                to={`/movie-details/${movie.imdbID}`}
+                to={`/movie-details?imdbID=${movie.imdbID}`}
                 className={styles.movieCard}
               >
                 <Suspense

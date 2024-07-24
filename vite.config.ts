@@ -10,5 +10,10 @@ export default defineConfig({
       },
     },
   },
-  base: "/movie-database/",
+  build: {
+    outDir: "dist",
+  },
+  server: {
+    port: 3000,
+  },
 });

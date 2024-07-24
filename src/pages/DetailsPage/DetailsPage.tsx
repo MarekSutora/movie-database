@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   Spinner,
@@ -31,11 +31,13 @@ const fetchMovieDetails = async (imdbId: string) => {
 };
 
 const DetailsPage = () => {
-  const { imdbId } = useParams<{ imdbId: string }>();
+  const [searchParams] = useSearchParams();
   const [favourites, setFavourites] = useState<string[]>(() => {
     const savedFavourites = localStorage.getItem("favourites");
     return savedFavourites ? JSON.parse(savedFavourites) : [];
   });
+
+  const imdbId = searchParams.get("imdbID");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["movieDetails", imdbId],
