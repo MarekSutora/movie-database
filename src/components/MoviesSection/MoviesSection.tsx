@@ -2,9 +2,9 @@ import { lazy, Suspense, useEffect, useRef } from "react";
 import { Spinner, Center } from "@chakra-ui/react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import { Link } from "react-router-dom";
 import styles from "./MoviesSection.module.scss";
 import { MovieBasic } from "../../lib/types";
+import { Link } from "react-router-dom";
 
 const MovieCard = lazy(() => import("../../components/MovieCard/MovieCard"));
 
@@ -58,6 +58,18 @@ const MoviesSection = ({
                 key={movie.imdbID}
                 to={`/movie-details?imdbID=${movie.imdbID}`}
                 className={styles.movieCard}
+                onClick={(
+                  e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+                ) => {
+                  if (e.button === 1) {
+                    e.preventDefault();
+                    window.open(
+                      `/movie-database/movie-details?imdbID=${movie.imdbID}`,
+                      "_blank",
+                      "noopener,noreferrer"
+                    );
+                  }
+                }}
               >
                 <Suspense
                   fallback={
