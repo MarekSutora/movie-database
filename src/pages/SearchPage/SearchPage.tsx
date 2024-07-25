@@ -14,9 +14,7 @@ const MoviesSection = lazy(
 
 const fetchMovies = async (pageParam: string, movieTitle: string) => {
   const response = await fetch(
-    `https://www.omdbapi.com/?apikey=${
-      import.meta.env.VITE_OMDB_API_KEY
-    }&s=${movieTitle}&page=${pageParam}`
+    `https://reverse-proxy-x6d2.onrender.com/api/?s=${movieTitle}&page=${pageParam}`
   );
 
   if (!response.ok) {

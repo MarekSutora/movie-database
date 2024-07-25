@@ -11,9 +11,7 @@ const MovieCard = lazy(() => import("../../components/MovieCard/MovieCard"));
 
 const fetchMovieDetails = async (imdbId: string): Promise<MovieBasic> => {
   const res = await fetch(
-    `https://www.omdbapi.com/?apikey=${
-      import.meta.env.VITE_OMDB_API_KEY
-    }&i=${imdbId}`
+    `https://reverse-proxy-x6d2.onrender.com/api/?i=${imdbId}`
   );
   if (!res.ok) {
     throw new Error("Network response was not ok");

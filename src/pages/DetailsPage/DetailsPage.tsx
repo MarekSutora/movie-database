@@ -19,9 +19,7 @@ import { Tooltip } from "@chakra-ui/react";
 
 const fetchMovieDetails = async (imdbId: string) => {
   const response = await fetch(
-    `https://www.omdbapi.com/?apikey=${
-      import.meta.env.VITE_OMDB_API_KEY
-    }&i=${imdbId}`
+    `https://reverse-proxy-x6d2.onrender.com/api/?i=${imdbId}`
   );
   if (!response.ok) {
     throw new Error("Network response was not ok");
