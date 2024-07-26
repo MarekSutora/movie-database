@@ -5,20 +5,9 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import styles from "./FavouritesPage.module.scss";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { MovieBasic } from "../../lib/types";
+import { fetchMovieDetails } from "../../lib/fetching";
 
 const MovieCard = lazy(() => import("../../components/MovieCard/MovieCard"));
-
-const fetchMovieDetails = async (imdbId: string): Promise<MovieBasic> => {
-  const res = await fetch(
-    `https://reverse-proxy-x6d2.onrender.com/api/?i=${imdbId}`
-  );
-  if (!res.ok) {
-    throw new Error("Network response was not ok");
-  }
-
-  return await res.json();
-};
 
 const FavouritesPage = () => {
   const [favourites, setFavourites] = useState<string[]>(() => {

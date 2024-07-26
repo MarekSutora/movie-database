@@ -16,17 +16,8 @@ import { StarIcon } from "@chakra-ui/icons";
 import styles from "./DetailsPage.module.scss";
 import { MovieDetails } from "../../lib/types";
 import { Tooltip } from "@chakra-ui/react";
+import { fetchMovieDetails } from "../../lib/fetching";
 
-const fetchMovieDetails = async (imdbId: string) => {
-  const response = await fetch(
-    `https://reverse-proxy-x6d2.onrender.com/api/?i=${imdbId}`
-  );
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-
-  return response.json();
-};
 
 const DetailsPage = () => {
   const { imdbId } = useParams<{ imdbId: string }>();

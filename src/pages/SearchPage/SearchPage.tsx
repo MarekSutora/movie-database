@@ -4,6 +4,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { moviesAtom, movieTitleAtom } from "../../lib/store";
 import { getErrorMessage } from "../../lib/utils";
+import { fetchMovies } from "../../lib/fetching";
 
 const ImageSearchSection = lazy(
   () => import("../../components/ImageSearchSection/ImageSearchSection")
@@ -12,18 +13,6 @@ const MoviesSection = lazy(
   () => import("../../components/MoviesSection/MoviesSection")
 );
 
-const fetchMovies = async (pageParam: string, movieTitle: string) => {
-  const response = await fetch(
-    `https://reverse-proxy-x6d2.onrender.com/api/?s=${movieTitle}&page=${pageParam}`
-  );
-
-  if (!response.ok) {
-    console.error("Network response was not ok");
-    throw new Error("Failed to fetch movies");
-  }
-  const data = await response.json();
-  return { ...data, prevOffset: pageParam };
-};
 
 const SearchPage = () => {
   const [movieTitle, setMovieTitle] = useAtom(movieTitleAtom);
