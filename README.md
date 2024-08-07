@@ -52,4 +52,4 @@ This project is a React application that allows users to search for movies, view
 
 ## Deployment
 
-The solution is deployed at: [Movie Application](https://mareksutora.github.io/movie-database/)
+The solution is deployed at: [Movie Application](https://movie-database-roan.vercel.app/)
