@@ -1,5 +1,7 @@
 # Movie Application
 
+The solution is available at: [Movie Application](https://movie-database-roan.vercel.app/)
+
 This project is a React application that allows users to search for movies, view movie details, and manage their favorite movies.
 
 ## Implementation Details
@@ -49,7 +51,3 @@ This project is a React application that allows users to search for movies, view
     - **store**: Contains Jotai atoms for state management.
     - **utils**: Contains utility functions.
   - **pages**: Contains the main page components for routing (e.g., MovieSearch, MovieDetail, MyFavoriteMovies). 
-
-## Deployment
-
-The solution is deployed at: [Movie Application](https://mareksutora.github.io/movie-database/)
