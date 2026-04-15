@@ -1,17 +1,28 @@
-FROM node:18-alpine
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
-
 RUN npm install
-
-RUN npm i -g serve
 
 COPY . .
 
+ARG VITE_API_URL
+ARG VITE_OMDB_KEY_API
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_OMDB_KEY_API=$VITE_OMDB_KEY_API
+
 RUN npm run build
 
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+RUN npm install -g serve
+
+COPY --from=builder /app/dist ./dist
+
+ENV PORT=3000
 EXPOSE 3000
 
-CMD [ "serve", "-s", "dist" ]
+CMD ["sh", "-c", "serve -s dist -l ${PORT:-3000}"]
