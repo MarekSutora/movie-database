@@ -14,15 +14,11 @@ ENV VITE_OMDB_KEY_API=$VITE_OMDB_KEY_API
 
 RUN npm run build
 
-FROM node:20-alpine AS runner
+FROM nginx:alpine AS runner
 
-WORKDIR /app
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-RUN npm install -g serve
-
-COPY --from=builder /app/dist ./dist
-
-ENV PORT=3000
 EXPOSE 3000
 
-CMD ["sh", "-c", "serve -s dist -l ${PORT:-3000}"]
+CMD ["nginx", "-g", "daemon off;"]      
